@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="height:100%;width:100%;">
     <div class="curtain" @click="close"/>
     <div class="modal-contents">
       <div class="top">
@@ -69,16 +69,19 @@ export default {
 
 }
 .close{
-  color:black;
+  color:white;
   padding-right:32px;
   padding-top:32px;
+  z-index:999;
 }
 .modalImage{
   width:100%;
   height:100%;
   object-fit: cover;  
+  border-radius: 24px;
 }
 .modalBody{
+  margin-top:-51px;
   width:100%;
   height:100%;
   object-fit: cover;  
