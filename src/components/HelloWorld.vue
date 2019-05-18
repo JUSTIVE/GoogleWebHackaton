@@ -1,72 +1,86 @@
 /* eslint-disable */
 <template>
   <div class="hello">
-     <v-autocomplete :items="items" v-model="item" :get-label="getLabel" :component-item='template' @update-items="updateItems"/>
-     <ul class="cards" 
-        v-for="card in items"
-        :key="card.id"
-      >
-        <li>
-          <div class="user">
-            <!-- {{card.user.display_name}} -->
-          </div>
-        </li>
-     </ul>
+    <MoreModal v-show="showModal"/>
+    <v-autocomplete
+      :items="items"
+      v-model="item"
+      :get-label="getLabel"
+      :component-item="template"
+      @update-items="updateItems"
+    />
+
+    <GifCardLayout :data="items"/>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
-import Autocomplete from 'v-autocomplete'
-import ItemTemplate from './ItemTemplate.vue';
-import 'v-autocomplete/dist/v-autocomplete.css';
-import Vue from 'vue';
+import axios from "axios";
+import Autocomplete from "v-autocomplete";
+import ItemTemplate from "./ItemTemplate.vue";
+import "v-autocomplete/dist/v-autocomplete.css";
+
+import GifCardLayout from "./GifCardLayout.vue";
+import Vue from "vue";
+import GifCardLayoutVue from "./GifCardLayout.vue";
+import MoreModal from "./Modal.vue";
+import EventBus from "./EventBus.vue";
 
 Vue.use(Autocomplete);
 
 export default {
-  
   name: "HelloWorld",
+  components: {
+    GifCardLayout,
+    MoreModal
+  },
   props: {
     msg: String
   },
-  data () {
+  data() {
     return {
-      item: {id: 9, name: 'Lion', description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.'},
+      item: {
+        id: 9,
+        name: "Lion",
+        description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit."
+      },
       items: [],
-      template: ItemTemplate
-    }
+      template: ItemTemplate,
+      showModal:false,
+    };
   },
   created() {
-     this.fetchImageItems().then( ({data: {data}}) => {
-        console.log(JSON.stringify(data,null,4))
-
-        this.items = data
-      })
-  },
-  methods:{
-    getLabel (item) {
-      return item.name
-    },
-    fetchImageItems(){
-      const api ="Gi3N0PItb1km0JpCIphGjlzLTfgoVBvb";
-    const limit =20;
-    return axios({
-      method:'get',
-      url:'http://api.giphy.com/v1/gifs/trending',
-      params:{
-        api_key: api,
-        limit,
-      },
-      headers:{
-        'Content-Type':'application/json',
-      },
+    this.fetchImageItems().then(({ data: { data } }) => {
+      console.log(data);
+      this.items = data;
+    });
+    EventBus.$on("showModal",(data)=>{
+      this.showModal=true;
     })
+  },
+  methods: {
+    getLabel(item) {
+      return item.name;
     },
-    updateItems (text) {
-      this.fetchImageItems(text).then( (response) => {
-        this.items = response
-      })
+    fetchImageItems() {
+      const api = "Gi3N0PItb1km0JpCIphGjlzLTfgoVBvb";
+      const limit = 20;
+      return axios({
+        method: "get",
+        url: "http://api.giphy.com/v1/gifs/trending",
+        params: {
+          api_key: api,
+          limit
+        },
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+    },
+    updateItems(text) {
+      this.fetchImageItems(text).then(response => {
+        this.items = response;
+      });
     }
   }
 };
