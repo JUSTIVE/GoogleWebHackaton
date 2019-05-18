@@ -1,8 +1,12 @@
 /* eslint-disable */
 <template>
   <div class="hello">
-     <v-autocomplete :items="items" v-model="item" :get-label="getLabel" :component-item='template' @update-items="updateItems"/>
-     <ul class="cards" 
+     <v-autocomplete
+      :items="items"
+      @change="updateItems"
+      :component-item='template'
+     />
+     <ul class="cards"
         v-for="card in items"
         :key="card.id"
       >
@@ -17,22 +21,24 @@
 
 <script>
 import axios from 'axios';
-import Autocomplete from 'v-autocomplete'
+import Autocomplete from 'v-autocomplete';
 import ItemTemplate from './ItemTemplate.vue';
 import 'v-autocomplete/dist/v-autocomplete.css';
 import Vue from 'vue';
+// import { getImageByKeyWord } from '../../api/index.js';
 
 Vue.use(Autocomplete);
 
 export default {
-  
+
   name: "HelloWorld",
   props: {
     msg: String
   },
   data () {
     return {
-      item: {id: 9, name: 'Lion', description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.'},
+      timer: null,
+      searchText: '',
       items: [],
       template: ItemTemplate
     }
@@ -45,12 +51,9 @@ export default {
       })
   },
   methods:{
-    getLabel (item) {
-      return item.name
-    },
     fetchImageItems(){
       const api ="Gi3N0PItb1km0JpCIphGjlzLTfgoVBvb";
-    const limit =20;
+      const limit =20;
     return axios({
       method:'get',
       url:'http://api.giphy.com/v1/gifs/trending',
@@ -63,9 +66,31 @@ export default {
       },
     })
     },
-    updateItems (text) {
-      this.fetchImageItems(text).then( (response) => {
-        this.items = response
+    updateItems(searchText) {
+      console.log('item', searchText);
+      if (this.timer) {
+          clearTimeout(this.timer);
+      }
+      this.timer = setTimeout(() => {
+        this.fetchImageByKeyword(searchText).then(response=>{
+            const searchedData = response.data.data;
+            this.items = searchedData;
+        })},200);
+    },
+    fetchImageByKeyword(q){
+      const api ="Gi3N0PItb1km0JpCIphGjlzLTfgoVBvb";
+      const limit =20;
+      return axios({
+        method:'get',
+        url:'http://api.giphy.com/v1/gifs/search',
+        params:{
+          api_key: api,
+          limit,
+          q,
+        },
+        headers:{
+          'Content-Type':'application/json',
+        },
       })
     }
   }
