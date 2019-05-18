@@ -1,18 +1,23 @@
 <template>
   <div id="GifCard" @click="showModal">
-    <img :src="imgres.images.original.url" alt>
+    <img class="cardimage" :src="imgres.images.downsized.url" alt>
     <div class="meta">
-      <img class="Hero" :src="imgres.user.avatar_url" alt>
-      <div class="name">
-        <span class="display_name">{{imgres.user.display_name}}</span>
-        <span class="username">{{"@"+imgres.user.username}}</span>
+      <div v-if="imgres.user==undefined">
+        <img class="noHero">
+      </div>
+      <div v-else style="display:flex;">
+        <img class="Hero" :src="imgres.user.avatar_url" alt>
+        <div class="name">
+          <span class="display_name">{{imgres.user.display_name}}</span>
+          <span class="username">{{"@"+imgres.user.username}}</span>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import EventBus from "./EventBus.vue";
+import EventBus from "./eventBus";
 export default {
   name: "GifCard",
   props: {
@@ -40,7 +45,7 @@ export default {
 #GifCard:hover {
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
 }
-img {
+.cardimage{
   border-radius: 24px;
   object-fit: cover;
   height: 200px;
@@ -48,10 +53,17 @@ img {
 .Hero {
   width: 32px;
   height: 32px;
+  border-radius: 16px;
+}
+.noHero {
+  width: 32px;
+  height: 32px;
+  border-radius: 16px;
+  background-color: blue;
 }
 .meta {
   display: flex;
-  margin-top: -48px;
+  margin-top: -56px;
   padding: 12px;
   text-align: start;
   background: rgb(0, 0, 0);

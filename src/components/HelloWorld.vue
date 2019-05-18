@@ -24,7 +24,7 @@ import GifCardLayout from "./GifCardLayout.vue";
 import Vue from "vue";
 import GifCardLayoutVue from "./GifCardLayout.vue";
 import MoreModal from "./Modal.vue";
-import EventBus from "./EventBus.vue";
+import EventBus from "./eventBus";
 
 Vue.use(Autocomplete);
 
@@ -57,13 +57,16 @@ export default {
     EventBus.$on("ShowModal",(data)=>{
       this.showModal=true;
     });
+    EventBus.$on("closeModal",()=>{
+      this.showModal=false;
+    });
   },
   methods: {
     getLabel(item) {
       return item.name;
     },
     fetchImageItems() {
-      const api = "Gi3N0PItb1km0JpCIphGjlzLTfgoVBvb";
+      const api = "zvD1BZJTKwV3ZJOnj3sXvJ3r4NYrwznU";
       const limit = 20;
       return axios({
         method: "get",

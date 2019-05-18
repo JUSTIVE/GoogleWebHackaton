@@ -1,14 +1,23 @@
 <template>
   <div>
-    <div class="curtain"/>
+    <div class="curtain" @click="close"/>
     <div class="modal-contents">
+      <div class="top">
+        <div style="flex:1;"/>
+        <div class="close" @click="close">
+          X
+        </div>
 
+      </div>
+      <div class="modalBody">
+        <img class="modalImage" :src="data.images.original.url">
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import EventBus from "./EventBus.vue";
+import EventBus from "./eventBus";
 export default {
   name: "MoreModal",
   data: () => {
@@ -20,6 +29,11 @@ export default {
     EventBus.$on("ShowModal", (data) => {
       this.data = data;
     });
+  },
+  methods:{
+    close(){
+      EventBus.$emit("closeModal");
+    }
   }
 };
 </script>
@@ -49,5 +63,24 @@ export default {
   width: 50vw;
   background: white;
   border-radius: 24px;
+}
+.top{
+  display:flex;
+
+}
+.close{
+  color:black;
+  padding-right:32px;
+  padding-top:32px;
+}
+.modalImage{
+  width:100%;
+  height:100%;
+  object-fit: cover;  
+}
+.modalBody{
+  width:100%;
+  height:100%;
+  object-fit: cover;  
 }
 </style>
