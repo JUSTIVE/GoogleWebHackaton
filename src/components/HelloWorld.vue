@@ -2,6 +2,16 @@
 <template>
   <div class="hello">
      <v-autocomplete :items="items" v-model="item" :get-label="getLabel" :component-item='template' @update-items="updateItems"/>
+     <ul class="cards" 
+        v-for="card in items"
+        :key="card.id"
+      >
+        <li>
+          <div class="user">
+            <!-- {{card.user.display_name}} -->
+          </div>
+        </li>
+     </ul>
   </div>
 </template>
 
@@ -28,31 +38,33 @@ export default {
     }
   },
   created() {
-    // const api ="Gi3N0PItb1km0JpCIphGjlzLTfgoVBvb";
-    // const limit =20;
-    // const query = 'cat';
-    // axios({
-    //   method:'get',
-    //   url:'http://api.giphy.com/v1/gifs/search',
-    //   params:{
-    //     api_key: api,
-    //     q:query,
-    //     limit,
-    //   },
-    //   headers:{
-    //     'Content-Type':'application/json',
-    //   },
-    // })
-    // .then((response)=>{
-    //   console.log(response);
-    // });
+     this.fetchImageItems().then( ({data: {data}}) => {
+        console.log(JSON.stringify(data,null,4))
+
+        this.items = data
+      })
   },
   methods:{
     getLabel (item) {
       return item.name
     },
+    fetchImageItems(){
+      const api ="Gi3N0PItb1km0JpCIphGjlzLTfgoVBvb";
+    const limit =20;
+    return axios({
+      method:'get',
+      url:'http://api.giphy.com/v1/gifs/trending',
+      params:{
+        api_key: api,
+        limit,
+      },
+      headers:{
+        'Content-Type':'application/json',
+      },
+    })
+    },
     updateItems (text) {
-      yourGetItemsMethod(text).then( (response) => {
+      this.fetchImageItems(text).then( (response) => {
         this.items = response
       })
     }
