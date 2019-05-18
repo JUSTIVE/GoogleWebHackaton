@@ -5,12 +5,10 @@
     <v-autocomplete
       :items="items"
       v-model="item"
-      :get-label="getLabel"
       :component-item="template"
       @update-items="updateItems"
       @change="updateItems"
     />
-
     <GifCardLayout :data="items"/>
   </div>
 </template>
@@ -21,11 +19,10 @@ import Autocomplete from "v-autocomplete";
 import ItemTemplate from "./ItemTemplate.vue";
 import "v-autocomplete/dist/v-autocomplete.css";
 
-import GifCardLayout from "./GifCardLayout.vue";
 import Vue from "vue";
-import GifCardLayoutVue from "./GifCardLayout.vue";
+import GifCardLayout from "./GifCardLayout.vue";
 import MoreModal from "./Modal.vue";
-import EventBus from "./EventBus.vue";
+import EventBus from "./eventBus";
 
 Vue.use(Autocomplete);
 
@@ -52,16 +49,16 @@ export default {
       console.log(data);
       this.items = data;
     });
-    EventBus.$on("showModal",(data)=>{
+    EventBus.$on("ShowModal",(data)=>{
       this.showModal=true;
-    })
+    });
+    EventBus.$on("closeModal",()=>{
+      this.showModal=false;
+    });
   },
   methods: {
-    getLabel(item) {
-      return item.name;
-    },
     fetchImageItems() {
-      const api = "Gi3N0PItb1km0JpCIphGjlzLTfgoVBvb";
+      const api = "zvD1BZJTKwV3ZJOnj3sXvJ3r4NYrwznU";
       const limit = 20;
       return axios({
         method: "get",
@@ -78,12 +75,12 @@ export default {
     updateItems(searchText) {
       console.log('item', searchText);
       if (this.timer) {
-          clearTimeout(this.timer);
+        clearTimeout(this.timer);
       }
       this.timer = setTimeout(() => {
         this.fetchImageByKeyword(searchText).then(response=>{
-            const searchedData = response.data.data;
-            this.items = searchedData;
+          const searchedData = response.data.data;
+          this.items = searchedData;
         })},200);
     },
     fetchImageByKeyword(q){
