@@ -8,6 +8,7 @@
       :get-label="getLabel"
       :component-item="template"
       @update-items="updateItems"
+      @change="updateItems"
     />
 
     <GifCardLayout :data="items"/>
@@ -39,11 +40,8 @@ export default {
   },
   data() {
     return {
-      item: {
-        id: 9,
-        name: "Lion",
-        description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit."
-      },
+      timer: null,
+      searchText: '',
       items: [],
       template: ItemTemplate,
       showModal:false,
@@ -77,10 +75,32 @@ export default {
         }
       });
     },
-    updateItems(text) {
-      this.fetchImageItems(text).then(response => {
-        this.items = response;
-      });
+    updateItems(searchText) {
+      console.log('item', searchText);
+      if (this.timer) {
+          clearTimeout(this.timer);
+      }
+      this.timer = setTimeout(() => {
+        this.fetchImageByKeyword(searchText).then(response=>{
+            const searchedData = response.data.data;
+            this.items = searchedData;
+        })},200);
+    },
+    fetchImageByKeyword(q){
+      const api ="Gi3N0PItb1km0JpCIphGjlzLTfgoVBvb";
+      const limit =20;
+      return axios({
+        method:'get',
+        url:'http://api.giphy.com/v1/gifs/search',
+        params:{
+          api_key: api,
+          limit,
+          q,
+        },
+        headers:{
+          'Content-Type':'application/json',
+        },
+      })
     }
   }
 };
