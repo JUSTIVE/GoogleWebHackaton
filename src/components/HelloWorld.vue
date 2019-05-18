@@ -54,9 +54,9 @@ export default {
       console.log(data);
       this.items = data;
     });
-    EventBus.$on("showModal",(data)=>{
+    EventBus.$on("ShowModal",(data)=>{
       this.showModal=true;
-    })
+    });
   },
   methods: {
     getLabel(item) {

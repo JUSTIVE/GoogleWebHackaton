@@ -10,7 +10,7 @@ import GifCard from './GifCard.vue';
 export default {
     name:"GifCardLayout",
     props:{
-        data:Object
+        data:Array
     },
     components:{
         GifCard,
